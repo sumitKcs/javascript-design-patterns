@@ -33,39 +33,158 @@ In the upcoming sections of this article, we will dive into six essential JavaSc
 
 The JavaScript Module Pattern is a widely used design pattern that helps encapsulate and organize code into modular, self-contained units. It provides a way to create private and public members, effectively preventing namespace pollution and promoting code reusability.
 
-To implement the Module Pattern, we utilize the concept of closures and immediately invoked function expressions (IIFEs). This combination allows us to create a private scope for our module, where variables and functions are kept private and inaccessible from the outside world.
+In JavaScript, there are different ways to create module patterns that encapsulate and organize code:
 
-Let's explore an example of how the Module Pattern can be implemented in JavaScript:
-
-```javascript
-const Module = (function() {
-  // Private variable
-  let privateVar = 'I am private';
-
-  // Private function
-  function privateFunction() {
-    console.log('This is a private function.');
-  }
-
-  // Public members
-  return {
-    publicVar: 'I am public',
-
-    publicFunction() {
-      console.log('This is a public function.');
-      privateFunction(); // Accessing private function within the module
+1. ## Object Literal
+    
+    The JavaScript module pattern using an object literal is a way to encapsulate related properties and methods within a single object. It provides a simple and straightforward approach to creating modular code. Here's an example:
+    
+    ```javascript
+    const myModule = {
+      property1: 'value1',
+      property2: 'value2',
+      method1: function() {
+        // code here
+      },
+      method2: function() {
+        // code here
+      }
+    };
+    ```
+    
+    In this example, `myModule` is an object that serves as a container for our module. It contains properties (`property1`, `property2`) and methods (`method1`, `method2`) that define the functionality of the module.
+    
+    The properties can hold any type of data, such as strings, numbers, or even other objects. The methods are functions that perform specific actions or operations.
+    
+    By using this module pattern, we can group related functionality together, making it easier to organize and maintain our code. Access to the properties and methods within the module is done using the dot notation.
+    
+    For instance, to access `property1` from `myModule`, we would use `myModule.property1`. Similarly, to invoke `method1`, we would call `myModule.method1()`.
+    
+    The module pattern with object literals provides a convenient way to create self-contained modules in JavaScript, avoiding global namespace pollution and promoting code organization. It's particularly useful when you want to group related functionality or define a set of utilities or helper functions.
+    
+2. ## Immediately Invoked Function Expression ( IIFE ):
+    
+    An IIFE is a self-invoking anonymous function that creates a private scope for your module. This pattern allows you to define private variables and expose only the necessary functions or properties.
+    
+    Let's explore an example of how the Module Pattern can be implemented in JavaScript:
+    
+    ```javascript
+    const Module = (function() {
+      // Private variable
+      let privateVar = 'I am private';
+    
+      // Private function
+      function privateFunction() {
+        console.log('This is a private function.');
+      }
+    
+      // Public members
+      return {
+        publicVar: 'I am public',
+    
+        publicFunction() {
+          console.log('This is a public function.');
+          privateFunction(); // Accessing private function within the module
+        }
+      };
+    })();
+    
+    // Usage
+    console.log(Module.publicVar); // Output: "I am public"
+    Module.publicFunction(); // Output: "This is a public function." followed by "This is a private function."
+    ```
+    
+    In this example, we create a module named `Module` using an IIFE. Inside the IIFE, we have a private variable `privateVar` and a private function `privateFunction`. These private members are inaccessible from outside the module, ensuring data privacy and encapsulation.
+    
+    The module also exposes public members, such as `publicVar` and `publicFunction`, which can be accessed from outside the module. These public members can interact with the private members, providing controlled access to the encapsulated functionality.
+    
+3. ## ES2015 Modules
+    
+    ES2015 brought in native JavaScript modules, which provide a convenient way to encapsulate code within separate files. Modules help maintain privacy by default, keeping their internal values inaccessible and unmodifiable. Only the values explicitly marked for export with the export keyword can be accessed and utilized by other files. This allows for better control over the visibility and accessibility of variables and functions, promoting encapsulation and modular development in JavaScript applications.
+    
+    Ways to use module feature:
+    
+    ### HTML Tag
+    
+    * In HTML files, you can use the `type="module"` attribute in the script tag to indicate that the script contains an ES2015 module.
+        
+    * Each script file is treated as a separate module.
+        
+    * You can use the `import` and `export` keywords within the script file to define dependencies and expose functionality.
+        
+    * Here's an example:
+        
+        Importing `module1.js` file in HTML using &lt;script&gt; tag with attribute `type="module"`. This `module1.js` file is importing properties and methods from another script file `module2.js` using the `import` keyword.
+        
+        ```xml
+        <!-- index.html -->
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <script type="module" src="module1.js"></script>
+          </head>
+          <body>
+            <!-- HTML content -->
+          </body>
+        </html>
+        ```
+        
+        ```javascript
+        // module1.js
+        import { sayHello } from './module2.js';
+        
+        sayHello('John'); // Output: "Hello, John"
+        console.log(greeting); // Output: Error: The requested module '/module2.js' does not provide an export named 'greeting'
+        ```
+        
+        ```javascript
+        // module2.js
+        const greeting = "Hello";
+        export function sayHello(name) {
+          console.log(greeting +", "+ name);
+        }
+        ```
+        
+        Here, in module2.js we can see that the `greeting` property is not exported and hence when we tried to access this property inside `moudle1.js`, got an error saying "`Error: The requested module '/module2.js' does not provide an export named 'greeting'`"
+        
+    
+    ### Node
+    
+    In Node, you can use ES2015 modules either by:
+    
+    * Using the `.mjs` extension
+        
+    * Adding `"type": "module"` to your `package.json`
+        
+    
+    ```javascript
+    // package.json
+    {
+      "type": "module",
+      "name": "my-node-app",
+      "version": "1.0.0",
+      "main": "index.js"
     }
-  };
-})();
-
-// Usage
-console.log(Module.publicVar); // Output: "I am public"
-Module.publicFunction(); // Output: "This is a public function." followed by "This is a private function."
-```
-
-In this example, we create a module named `Module` using an IIFE. Inside the IIFE, we have a private variable `privateVar` and a private function `privateFunction`. These private members are inaccessible from outside the module, ensuring data privacy and encapsulation.
-
-The module also exposes public members, such as `publicVar` and `publicFunction`, which can be accessed from outside the module. These public members can interact with the private members, providing controlled access to the encapsulated functionality.
+    ```
+    
+    After configuring the `package.json` file or naming script files with an extension as `.mjs`, you can use ES2015 module features in all script files and can use `import` and `export` keywords.
+    
+    ```javascript
+    // module1.js
+    import { sayHello } from './module2.js';
+    
+    sayHello('John'); // Output: "Hello, John"
+    console.log(greeting); // Output: Error: The requested module '/module2.js' does not provide an export named 'greeting'
+    ```
+    
+    ```javascript
+    // module2.js
+    const greeting = "Hello";
+    export function sayHello(name) {
+      console.log(greeting +", "+ name);
+    }
+    ```
+    
 
 The JavaScript Module Pattern offers several benefits, including:
 
@@ -296,7 +415,6 @@ subject.notify("Hello observers!"); // Output: "Observer 1 received an update: H
 subject.unsubscribe(observer2);
 
 subject.notify("Goodbye observers!"); // Output: "Observer 1 received an update: Goodbye observers!"
-
 ```
 
 In this example, we create a `Subject` class that represents the subject being observed. It maintains an array of `observers` and provides methods to subscribe, unsubscribe, and notify the observers.
@@ -430,6 +548,6 @@ With the knowledge of these six JavaScript design patterns, you are well-equippe
 
 Keep exploring, learning, and applying these design patterns to unlock new possibilities and advance your journey as a JavaScript developer. Happy coding!
 
-### Connect with me
+# Connect with me
 
 [Twitter](https://twitter.com/risesumit) [Github](https://github.com/SumitKcs) [Linkedin](https://www.linkedin.com/in/sumitssr/)
